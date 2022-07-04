@@ -17,14 +17,14 @@
 #    value = "${data.kubernetes_ingress.address.load_balancer_ingress}"
 # }
 
-# output "cluster_name" {
-#   value = module.eks.eks_cluster_name
+output "cluster_name" {
+  value = module.eks.eks_cluster_name
+}
+
+# output "certificate_arn" {
+#   value = module.acm.acm_certificate_arn
 # }
 
-output "certificate_arn" {
-  value = module.acm.acm_certificate_arn
-}
-
-output "validation_record" {
-  value = module.acm.acm_certificate_dns_validation_record
-}
+# output "validation_record" {
+#   value = module.acm.acm_certificate_dns_validation_record
+# }
