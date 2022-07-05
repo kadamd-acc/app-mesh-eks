@@ -85,6 +85,7 @@ jobs:
         id: destroy
         run: terraform destroy -auto-approve -input=false -var-file=${{ matrix.environment }}/terraform.tfvars
         
+        
 #      - name: adding config file to s3
 #        run: |
 #          cd /home/runner/.kube
