@@ -10,6 +10,7 @@ provider "aws" {
     }
   }
 }
+
 terraform {
   backend "s3" {
     bucket = "landg-terraform-state1"
