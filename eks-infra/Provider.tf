@@ -18,7 +18,8 @@ terraform {
     encrypt= true
 
   }
-  }
+}
+
 locals {
   cluster_name= data.aws_eks_cluster.eks_cluster.name
 }
