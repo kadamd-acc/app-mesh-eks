@@ -59,6 +59,7 @@ module "eks_kubernetes_addons" {
   k8s_cluster_name = module.eks.eks_cluster_name
   depends_on = [module.eks, module.coredns_patching]
 }
+
 module "aws_appmesh_controller" {
   source  = "../modules/aws-appmesh-controller"
   k8s_namespace    = "appmesh-system"
@@ -67,15 +68,6 @@ module "aws_appmesh_controller" {
 }
 
 
-# module "acm" {
-#   source           = "../modules/acm-cert"
-#   domain_name      = "landg-eks.com"
-#   hosted_zone_name = "landg-eks.com"
-#   #certificate_name = "wildcard.tsi.dev-tvlk.cloud"
-#   environment      = "testing"
-#   description      = "Wildcard certificate for example.tsi.dev-tvlk.cloud"
-#   product_domain   = "eks"
-# }
 # module "kubernetes_app" {
 #    source           =  "../modules/kubernetes-app"
 
