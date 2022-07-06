@@ -16,7 +16,7 @@ resource "aws_eks_cluster" "eks_cluster" {
   version  = var.cluster_version
   
    vpc_config {
-    subnet_ids =  concat(var.public_subnets, var.private_subnets)
+    subnet_ids =   var.private_subnets
   }
    
    timeouts {
