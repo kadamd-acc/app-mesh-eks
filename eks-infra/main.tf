@@ -34,7 +34,7 @@ module "eks" {
     cluster_version                     =  var.cluster_version
     environment                         =  var.environment
     #eks_node_group_instance_types       =  var.eks_node_group_instance_types
-    private_subnets                     =  data.aws_subnet.all.id
+    private_subnets                     =  data.aws_subnet.all
     #public_subnets                      =  module.vpc.aws_subnets_public
     fargate_app_namespace               =  var.fargate_app_namespace
     namespace                           = var.namespace
