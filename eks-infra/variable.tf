@@ -36,3 +36,9 @@ variable "github_runner_base_path" {
   default = "/home/runner/"
 }
 
+variable "namespace" {
+    type = string
+  }
+variable "workload" {
+    type = string
+  }

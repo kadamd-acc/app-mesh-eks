@@ -41,6 +41,3 @@ variable "cidr_block_nat_gw" {
 variable "cidr_block_internet_gw" {
     description = "Destination cidr of internet gateway"
 }
-
-
-

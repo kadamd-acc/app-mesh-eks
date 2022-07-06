@@ -24,3 +24,13 @@ variable "cluster_version" {
   description = "Version of the EKS Cluster"
   default = "1.22"
 }
+
+variable "namespace" {
+    type = string
+  }
+variable "workload" {
+    type = string
+  }
+variable "region_name" {
+  type = string
+  }

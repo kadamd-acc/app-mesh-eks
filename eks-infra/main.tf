@@ -37,6 +37,9 @@ module "eks" {
     private_subnets                     =  data.aws_subnet.all.id
     #public_subnets                      =  module.vpc.aws_subnets_public
     fargate_app_namespace               =  var.fargate_app_namespace
+    namespace                           = var.namespace
+    workload                            = var.workload
+    region_name                         = var.region_name
 
    # depends_on = [module.vpc]
 }
