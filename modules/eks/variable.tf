@@ -8,6 +8,8 @@ variable "environment" {
 
 
 variable "private_subnets" {
+  type = list
+  default = []
   description = "List of private subnet IDs"
 }
 
