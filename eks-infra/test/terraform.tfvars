@@ -3,7 +3,7 @@
 environment                  =  "testing"
 user_profile                 =  "AWS_741032333307_User"
 user_os                      =  "linux"
-cluster_name                 =  "landg-eks-clstr"
+cluster_name                 =  "acn-eks-clstr"
 cluster_version              =  "1.22"
 cluster_type                 =  "eks"
 cluster_group                =  "eks-fargate"
