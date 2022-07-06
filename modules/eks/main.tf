@@ -5,7 +5,7 @@ Creating EKS Cluster
 ========================*/
 
 locals {
-   namespace = "${var.namespace != "" ? "${join(var.namespace,"-")}" : ""}"
+   namespace = "${var.namespace != "" ? "${var.namespace}-}" : ""}"
 }
 resource "aws_eks_cluster" "eks_cluster" {
   name     = "${local.namespace}${var.workload}-${var.environment}-eks-${var.region_name }"
