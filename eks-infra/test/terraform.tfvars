@@ -1,9 +1,11 @@
 # EKS Cluster and Network Infrastructure
 
 environment                  =  "testing"
+namespace                    = "plat-6521"
+workload                     = "eksplat"
 user_profile                 =  "AWS_741032333307_User"
 user_os                      =  "linux"
-cluster_name                 =  "acn-eks-clstr"
+cluster_name                 =  "landg-eks-clstr"
 cluster_version              =  "1.22"
 cluster_type                 =  "eks"
 cluster_group                =  "eks-fargate"
