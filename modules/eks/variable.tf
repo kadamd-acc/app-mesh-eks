@@ -8,8 +8,7 @@ variable "environment" {
 
 
 variable "private_subnets" {
-  type = list
-  default = []
+  type = list(string)
   description = "List of private subnet IDs"
 }
 
