@@ -8,7 +8,6 @@ locals {
    namespace = "${var.namespace != "" ? "${join(var.namespace,"-")}" : ""}"
 }
 resource "aws_eks_cluster" "eks_cluster" {
-  count  = var.create_eks && var.cluster_kms_key_arn == null ? 1 : 0
   name     = "${local.namespace}${var.workload}-${var.environment}-eks-${var.region_name }"
    
   role_arn = aws_iam_role.eks_cluster_role.arn
