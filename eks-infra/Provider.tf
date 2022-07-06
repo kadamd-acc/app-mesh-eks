@@ -15,7 +15,7 @@ terraform {
   backend "s3" {
     bucket = "landg-terraform-state"
     key    = "landg-terraform/test/terraform.tfstate"
-    region = "eu-west-1"
+    region = "eu-west-2"
     encrypt= true
 
   }
