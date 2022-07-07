@@ -1,48 +1,51 @@
-# module "vpc" {
-#     source                              = "../modules/vpc"
-#     environment                         =  var.environment
-#     vpc_cidr                            =  var.vpc_cidr
-#     vpc_name                            =  var.vpc_name
-#     cluster_name                        =  var.cluster_name
-#     cluster_group                       =  var.cluster_group
-#     public_subnets_cidr                 =  var.public_subnets_cidr
-#     availability_zones_public           =  var.availability_zones_public
-#     private_subnets_cidr                =  var.private_subnets_cidr
-#     availability_zones_private          =  var.availability_zones_private
-#     cidr_block_nat_gw                   =  var.cidr_block_nat_gw
-#     cidr_block_internet_gw              =  var.cidr_block_internet_gw
-# }
-
-data "aws_vpc" "selected" {
-  id = "vpc-04bcb4d716ab6002b"
+module "vpc" {
+    source                              = "./modules/vpc"
+    environment                         =  var.environment
+    vpc_cidr                            =  var.vpc_cidr
+    vpc_name                            =  var.vpc_name
+    cluster_name                        =  var.cluster_name
+    cluster_group                       =  var.cluster_group
+    public_subnets_cidr                 =  var.public_subnets_cidr
+    availability_zones_public           =  var.availability_zones_public
+    private_subnets_cidr                =  var.private_subnets_cidr
+    availability_zones_private          =  var.availability_zones_private
+    cidr_block_nat_gw                   =  var.cidr_block_nat_gw
+    cidr_block_internet_gw              =  var.cidr_block_internet_gw
 }
 
-# Pull in all private subnet IDS
-data "aws_subnet_ids" "all" {
-  vpc_id = data.aws_vpc.selected.id
-}
-
-# Pull in all private subnet CIDR Blocks
-data "aws_subnet" "all" {
-  for_each = data.aws_subnet_ids.all.ids
-  id = each.value
-}
 
 module "eks" {
-    source                              =  "../modules/eks"
+    source                              =  "./modules/eks"
     cluster_name                        =  var.cluster_name
     cluster_version                     =  var.cluster_version
     environment                         =  var.environment
     #eks_node_group_instance_types       =  var.eks_node_group_instance_types
-    private_subnets                     =  ["subnet-0a9d5998682d2cffa","subnet-0fb50363d90cf99ba"]
-    #public_subnets                      =  module.vpc.aws_subnets_public
+    private_subnets                     =  module.vpc.aws_subnets_private
+    public_subnets                      =  module.vpc.aws_subnets_public
     fargate_app_namespace               =  var.fargate_app_namespace
     namespace                           = var.namespace
     workload                            = var.workload
     region_name                         = var.region_name
 
-   # depends_on = [module.vpc]
+    depends_on = [module.vpc]
 }
+
+
+# data "aws_vpc" "selected" {
+#   id = "vpc-04bcb4d716ab6002b"
+# }
+
+# # Pull in all private subnet IDS
+# data "aws_subnet_ids" "all" {
+#   vpc_id = data.aws_vpc.selected.id
+# }
+
+# # Pull in all private subnet CIDR Blocks
+# data "aws_subnet" "all" {
+#   for_each = data.aws_subnet_ids.all.ids
+#   id = each.value
+# }
+
 
 # module "coredns_patching" {
 #   source  = "../modules/coredns-patch"
