@@ -189,7 +189,6 @@ resource "aws_route_table_association" "private-rt-assotion" {
     depends_on = [aws_route.private_nat_gw_route , aws_route_table.private_rt]
 }
 
-
 /*============================
 VPC's Security Group(s)
 =============================*/
@@ -210,7 +209,7 @@ VPC's Security Group(s)
     from_port = 80
     to_port   = 80
     cidr_blocks =["35.177.235.44/32",
-                      "35.177.241.232/32",
+    "35.177.241.232/32",
     "165.225.80.0/22",
     "42.200.32.9/32",
     "134.159.88.9/32",
