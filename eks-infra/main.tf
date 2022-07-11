@@ -13,7 +13,6 @@ module "vpc" {
     cidr_block_internet_gw              =  var.cidr_block_internet_gw
 }
 
-
 module "eks" {
     source                              =  "../modules/eks"
     cluster_name                        =  var.cluster_name
