@@ -104,216 +104,216 @@ resource "aws_cloudwatch_log_group" "cloudwatch_log_group" {
 }
 
 
-/* =======================================
-Creating Fargate Profile for Applications
-==========================================*/
+# /* =======================================
+# Creating Fargate Profile for Applications
+# ==========================================*/
 
-resource "aws_eks_fargate_profile" "eks_fargate_app" {
-  cluster_name           = aws_eks_cluster.eks_cluster.name
-  fargate_profile_name   = substr("${local.namespace}-${var.environment}-app-fargate-profile",0,64)
-  pod_execution_role_arn = aws_iam_role.eks_fargate_role.arn
-  subnet_ids             = var.private_subnets
+# resource "aws_eks_fargate_profile" "eks_fargate_app" {
+#   cluster_name           = aws_eks_cluster.eks_cluster.name
+#   fargate_profile_name   = substr("${local.namespace}-${var.environment}-app-fargate-profile",0,64)
+#   pod_execution_role_arn = aws_iam_role.eks_fargate_role.arn
+#   subnet_ids             = var.private_subnets
 
-  dynamic "selector" {
-    for_each = var.fargate_app_namespace
-    content {
-        namespace = selector.value
-    }
-  }
-  timeouts {
-    create   = "30m"
-    delete   = "30m"
-  }
-}
+#   dynamic "selector" {
+#     for_each = var.fargate_app_namespace
+#     content {
+#         namespace = selector.value
+#     }
+#   }
+#   timeouts {
+#     create   = "30m"
+#     delete   = "30m"
+#   }
+# }
 
-/* =======================================
-Creating IAM Role for Fargate profile
-==========================================*/
+# /* =======================================
+# Creating IAM Role for Fargate profile
+# ==========================================*/
 
-resource "aws_iam_role" "eks_fargate_role" {
-  name = "${local.namespace}-fargate_cluster_role"
-  description = "Allow fargate cluster to allocate resources for running pods"
-  force_detach_policies = true
-  assume_role_policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": [ 
-           "eks.amazonaws.com",
-          "eks-fargate-pods.amazonaws.com"
-          ]
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-POLICY
-}
+# resource "aws_iam_role" "eks_fargate_role" {
+#   name = "${local.namespace}-fargate_cluster_role"
+#   description = "Allow fargate cluster to allocate resources for running pods"
+#   force_detach_policies = true
+#   assume_role_policy = <<POLICY
+# {
+#   "Version": "2012-10-17",
+#   "Statement": [
+#     {
+#       "Effect": "Allow",
+#       "Principal": {
+#         "Service": [ 
+#            "eks.amazonaws.com",
+#           "eks-fargate-pods.amazonaws.com"
+#           ]
+#       },
+#       "Action": "sts:AssumeRole"
+#     }
+#   ]
+# }
+# POLICY
+# }
 
-resource "aws_iam_role_policy_attachment" "AmazonEKSFargatePodExecutionRolePolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
-  role       = aws_iam_role.eks_fargate_role.name
-}
+# resource "aws_iam_role_policy_attachment" "AmazonEKSFargatePodExecutionRolePolicy" {
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
+#   role       = aws_iam_role.eks_fargate_role.name
+# }
 
-resource "aws_iam_role_policy_attachment" "AmazonEKSClusterPolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.eks_fargate_role.name
-}
-
-
-resource "aws_iam_role_policy_attachment" "AmazonEKSVPCResourceController" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
-  role       = aws_iam_role.eks_fargate_role.name
-}
-
-/* =======================================
-Creating Fargate Profile for CoreDNS
-==========================================*/
-
-resource "aws_eks_fargate_profile" "eks_fargate_system" {
-  cluster_name           = aws_eks_cluster.eks_cluster.name
-  fargate_profile_name   = substr("${local.namespace}-${var.environment}-system-fargate-profile",0,64)
-  pod_execution_role_arn = aws_iam_role.eks_fargate_system_role.arn
-  subnet_ids             = var.private_subnets
-  selector {
-    namespace = "kube-system"
-  }
-  selector {
-    namespace = "default"
-  }
-  timeouts {
-    create   = "30m"
-    delete   = "30m"
-  }
-}
-
-/* ===========================================
-Creating IAM Role for Fargate profile CoreDNS
-==============================================*/
-
-resource "aws_iam_role" "eks_fargate_system_role" {
-  name = substr("${local.namespace}-eks_fargate_system_role",0,64)
-  description = "Allow fargate cluster to allocate resources for running pods"
-  force_detach_policies = true
-  assume_role_policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": [ 
-           "eks.amazonaws.com",
-          "eks-fargate-pods.amazonaws.com"
-          ]
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-POLICY
-}
-
-resource "aws_iam_role_policy_attachment" "AmazonEKSFargatePodExecutionRolePolicy2" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
-  role       = aws_iam_role.eks_fargate_system_role.name
-}
-
-resource "aws_iam_role_policy_attachment" "AmazonEKSClusterPolicy2" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.eks_fargate_system_role.name
-}
+# resource "aws_iam_role_policy_attachment" "AmazonEKSClusterPolicy" {
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+#   role       = aws_iam_role.eks_fargate_role.name
+# }
 
 
-resource "aws_iam_role_policy_attachment" "AmazonEKSVPCResourceController2" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
-  role       = aws_iam_role.eks_fargate_system_role.name
-}
+# resource "aws_iam_role_policy_attachment" "AmazonEKSVPCResourceController" {
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
+#   role       = aws_iam_role.eks_fargate_role.name
+# }
+
+# /* =======================================
+# Creating Fargate Profile for CoreDNS
+# ==========================================*/
+
+# resource "aws_eks_fargate_profile" "eks_fargate_system" {
+#   cluster_name           = aws_eks_cluster.eks_cluster.name
+#   fargate_profile_name   = substr("${local.namespace}-${var.environment}-system-fargate-profile",0,64)
+#   pod_execution_role_arn = aws_iam_role.eks_fargate_system_role.arn
+#   subnet_ids             = var.private_subnets
+#   selector {
+#     namespace = "kube-system"
+#   }
+#   selector {
+#     namespace = "default"
+#   }
+#   timeouts {
+#     create   = "30m"
+#     delete   = "30m"
+#   }
+# }
+
+# /* ===========================================
+# Creating IAM Role for Fargate profile CoreDNS
+# ==============================================*/
+
+# resource "aws_iam_role" "eks_fargate_system_role" {
+#   name = substr("${local.namespace}-eks_fargate_system_role",0,64)
+#   description = "Allow fargate cluster to allocate resources for running pods"
+#   force_detach_policies = true
+#   assume_role_policy = <<POLICY
+# {
+#   "Version": "2012-10-17",
+#   "Statement": [
+#     {
+#       "Effect": "Allow",
+#       "Principal": {
+#         "Service": [ 
+#            "eks.amazonaws.com",
+#           "eks-fargate-pods.amazonaws.com"
+#           ]
+#       },
+#       "Action": "sts:AssumeRole"
+#     }
+#   ]
+# }
+# POLICY
+# }
+
+# resource "aws_iam_role_policy_attachment" "AmazonEKSFargatePodExecutionRolePolicy2" {
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
+#   role       = aws_iam_role.eks_fargate_system_role.name
+# }
+
+# resource "aws_iam_role_policy_attachment" "AmazonEKSClusterPolicy2" {
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+#   role       = aws_iam_role.eks_fargate_system_role.name
+# }
 
 
-/* ===========================================
-Creating IAM Role for Fargate profile AppMesh
-==============================================*/
-resource "aws_eks_fargate_profile" "eks_appmesh_system" {
-  cluster_name           = aws_eks_cluster.eks_cluster.name
-  fargate_profile_name   = substr("${local.namespace}-${var.environment}-appmesh-system-profile",0,64)
-  pod_execution_role_arn = aws_iam_role.eks_appmesh_system_role.arn
-  subnet_ids             = var.private_subnets
+# resource "aws_iam_role_policy_attachment" "AmazonEKSVPCResourceController2" {
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
+#   role       = aws_iam_role.eks_fargate_system_role.name
+# }
 
-  selector {
-    namespace = "appmesh-system"
-  }
-  timeouts {
-    create   = "30m"
-    delete   = "30m"
-  }
-}
 
-resource "aws_iam_role" "eks_appmesh_system_role" {
-  name = substr("${local.namespace}-eks_appmesh_system_role",0,64)
-  description = "Allow fargate cluster to allocate resources for running pods"
-  force_detach_policies = true
-  assume_role_policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": [
-           "eks.amazonaws.com",
-           "eks-fargate-pods.amazonaws.com",
-           "appmesh.amazonaws.com"
-          ]
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-POLICY
-}
+# /* ===========================================
+# Creating IAM Role for Fargate profile AppMesh
+# ==============================================*/
+# resource "aws_eks_fargate_profile" "eks_appmesh_system" {
+#   cluster_name           = aws_eks_cluster.eks_cluster.name
+#   fargate_profile_name   = substr("${local.namespace}-${var.environment}-appmesh-system-profile",0,64)
+#   pod_execution_role_arn = aws_iam_role.eks_appmesh_system_role.arn
+#   subnet_ids             = var.private_subnets
 
-resource "aws_iam_role_policy_attachment" "AmazonEKSFargatePodExecutionRolePolicy3" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
-  role       = aws_iam_role.eks_appmesh_system_role.name
-}
+#   selector {
+#     namespace = "appmesh-system"
+#   }
+#   timeouts {
+#     create   = "30m"
+#     delete   = "30m"
+#   }
+# }
 
-resource "aws_iam_role_policy_attachment" "AmazonEKSClusterPolicy3" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.eks_appmesh_system_role.name
-}
+# resource "aws_iam_role" "eks_appmesh_system_role" {
+#   name = substr("${local.namespace}-eks_appmesh_system_role",0,64)
+#   description = "Allow fargate cluster to allocate resources for running pods"
+#   force_detach_policies = true
+#   assume_role_policy = <<POLICY
+# {
+#   "Version": "2012-10-17",
+#   "Statement": [
+#     {
+#       "Effect": "Allow",
+#       "Principal": {
+#         "Service": [
+#            "eks.amazonaws.com",
+#            "eks-fargate-pods.amazonaws.com",
+#            "appmesh.amazonaws.com"
+#           ]
+#       },
+#       "Action": "sts:AssumeRole"
+#     }
+#   ]
+# }
+# POLICY
+# }
 
-resource "aws_iam_role_policy_attachment" "AmazonEKSVPCResourceController3" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
-  role       = aws_iam_role.eks_appmesh_system_role.name
-}
+# resource "aws_iam_role_policy_attachment" "AmazonEKSFargatePodExecutionRolePolicy3" {
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
+#   role       = aws_iam_role.eks_appmesh_system_role.name
+# }
 
-resource "aws_iam_role_policy_attachment" "AWSCloudMapFullAccess" {
-  policy_arn = "arn:aws:iam::aws:policy/AWSCloudMapFullAccess"
-  role       = aws_iam_role.eks_appmesh_system_role.name
-}
+# resource "aws_iam_role_policy_attachment" "AmazonEKSClusterPolicy3" {
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+#   role       = aws_iam_role.eks_appmesh_system_role.name
+# }
 
-resource "aws_iam_role_policy_attachment" "AWSAppMeshFullAccess" {
-  policy_arn = "arn:aws:iam::aws:policy/AWSAppMeshFullAccess"
-  role       = aws_iam_role.eks_appmesh_system_role.name
-}
+# resource "aws_iam_role_policy_attachment" "AmazonEKSVPCResourceController3" {
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
+#   role       = aws_iam_role.eks_appmesh_system_role.name
+# }
 
-################################################################################
-# IRSA
-# Note - this is different from EKS identity provider
-################################################################################
+# resource "aws_iam_role_policy_attachment" "AWSCloudMapFullAccess" {
+#   policy_arn = "arn:aws:iam::aws:policy/AWSCloudMapFullAccess"
+#   role       = aws_iam_role.eks_appmesh_system_role.name
+# }
 
-data "tls_certificate" "auth" {
-  url = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
-}
+# resource "aws_iam_role_policy_attachment" "AWSAppMeshFullAccess" {
+#   policy_arn = "arn:aws:iam::aws:policy/AWSAppMeshFullAccess"
+#   role       = aws_iam_role.eks_appmesh_system_role.name
+# }
 
-resource "aws_iam_openid_connect_provider" "oidc_provider" {
-  client_id_list  = ["sts.amazonaws.com"]
-  thumbprint_list = concat([data.tls_certificate.auth.certificates[0].sha1_fingerprint])
-  url             = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
+# ################################################################################
+# # IRSA
+# # Note - this is different from EKS identity provider
+# ################################################################################
 
-  tags = {  Name  = "${local.namespace}-${var.environment}-eks-irsa" }
-}
+# data "tls_certificate" "auth" {
+#   url = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
+# }
+
+# resource "aws_iam_openid_connect_provider" "oidc_provider" {
+#   client_id_list  = ["sts.amazonaws.com"]
+#   thumbprint_list = concat([data.tls_certificate.auth.certificates[0].sha1_fingerprint])
+#   url             = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
+
+#   tags = {  Name  = "${local.namespace}-${var.environment}-eks-irsa" }
+# }
