@@ -29,7 +29,6 @@ module "eks" {
     depends_on = [module.vpc]
 }
 
-
 # data "aws_vpc" "selected" {
 #   id = "vpc-04bcb4d716ab6002b"
 # }
