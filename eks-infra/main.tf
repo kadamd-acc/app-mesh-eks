@@ -46,40 +46,40 @@ module "eks" {
 # }
 
 
-module "coredns_patching" {
-  source  = "../modules/coredns-patch"
+# module "coredns_patching" {
+#   source  = "../modules/coredns-patch"
 
-  k8s_cluster_type = var.cluster_type
-  k8s_namespace    = "kube-system"
-  k8s_cluster_name = module.eks.eks_cluster_name
-  user_profile =   var.user_profile
-  user_os = var.user_os
-  depends_on = [module.eks]
+#   k8s_cluster_type = var.cluster_type
+#   k8s_namespace    = "kube-system"
+#   k8s_cluster_name = module.eks.eks_cluster_name
+#   user_profile =   var.user_profile
+#   user_os = var.user_os
+#   depends_on = [module.eks]
 
-}
-module "aws_alb_controller" {
-  source  = "../modules/aws-lb-controller"
-  k8s_cluster_type = var.cluster_type
-  k8s_namespace    = "kube-system"
-  k8s_cluster_name = module.eks.eks_cluster_name
- # alb_controller_depends_on =  ""
-  depends_on = [module.eks, module.coredns_patching]
-}
-
-module "eks_kubernetes_addons" {
-  source         = "../modules/kubernetes-addons"
-  enable_amazon_eks_vpc_cni    = true
-  k8s_cluster_type = var.cluster_type
-  k8s_namespace    = "kube-system"
-  k8s_cluster_name = module.eks.eks_cluster_name
-  depends_on = [module.eks, module.coredns_patching]
-}
-
-
-# module "kubernetes_app" {
-#    source           =  "../modules/kubernetes-app"
-
-#  depends_on = [module.eks, module.aws_alb_controller]
 # }
+# module "aws_alb_controller" {
+#   source  = "../modules/aws-lb-controller"
+#   k8s_cluster_type = var.cluster_type
+#   k8s_namespace    = "kube-system"
+#   k8s_cluster_name = module.eks.eks_cluster_name
+#  # alb_controller_depends_on =  ""
+#   depends_on = [module.eks, module.coredns_patching]
+# }
+
+# module "eks_kubernetes_addons" {
+#   source         = "../modules/kubernetes-addons"
+#   enable_amazon_eks_vpc_cni    = true
+#   k8s_cluster_type = var.cluster_type
+#   k8s_namespace    = "kube-system"
+#   k8s_cluster_name = module.eks.eks_cluster_name
+#   depends_on = [module.eks, module.coredns_patching]
+# }
+
+
+# # module "kubernetes_app" {
+# #    source           =  "../modules/kubernetes-app"
+
+# #  depends_on = [module.eks, module.aws_alb_controller]
+# # }
 
 
